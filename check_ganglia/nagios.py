@@ -24,11 +24,10 @@ def result (service, status, msg=None, perfdata=None):
     if perfdata:
         text.append(' | ')
         text.append(' '.join(['%s=%s;' % x for x in perfdata]))
-    print ''.join(text)
+    print (''.join(text))
     sys.exit(status)
 
 if __name__ == '__main__':
     p = OptionParser()
     opts, args = p.parse_args()
     result(STATUS_WTF, 'Thanks for playing.')
-

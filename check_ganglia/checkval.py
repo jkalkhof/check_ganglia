@@ -39,7 +39,7 @@ def checkval(v, r):
         r = r[1:]
 
     if ',' in r:
-        print '>>>', r,negate
+        print ('>>>', r,negate)
         return negate ^ (v in r.split(','))
 
     if isinstance(v, str):
@@ -58,5 +58,4 @@ if __name__ == '__main__':
     if v.isdigit():
         v = float(v)
 
-    print v, checkval(v,r)
-
+    print (v, checkval(v,r))

@@ -1,6 +1,10 @@
 import socket
 import lxml.etree as ET
-from cStringIO import StringIO
+# python 2
+#from cStringIO import StringIO
+# python 3
+from io import StringIO
+from io import BytesIO
 
 from errors import *
 
@@ -55,11 +59,13 @@ class Gmond (object):
             if hasattr(self, '_send_commands'):
                 self._send_commands(s, host, **kwargs)
             return self.process_results(s, host)
-        except socket.gaierror, detail:
+        # except socket.gaierror, detail:
+        except socket.gaierror as detail:
             raise ConnectionError(str(detail))
 
     def process_results (self, s, host):
-        buffer = StringIO()
+        # buffer = StringIO()
+        buffer = BytesIO()
         while True:
             data = s.recv(1024)
             if not data:
@@ -99,4 +105,3 @@ if __name__ == '__main__':
 
     g1 = Gmond(sys.argv[1])
     g2 = Gmetad(sys.argv[1])
- 

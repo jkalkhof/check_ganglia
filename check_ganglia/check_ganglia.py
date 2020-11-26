@@ -10,6 +10,8 @@ from errors import *
 from checkval import checkval
 import ganglia
 
+debugLevel = 0
+
 def parse_args():
     p = nagios.OptionParser()
 
@@ -51,13 +53,15 @@ def parse_args():
 def list_metrics(host):
     '''List all the available metrics for the given host.'''
 
+    if (debugLevel > 0): print ('list_metrics:',host)
+
     for metric in host.metrics():
-        print '%-30s %s' % (
+        print ('%-30s %s' % (
             '%s (%s, %s)' % (
                 metric.get('NAME'),
                 metric.get('TYPE'),
                 metric.get('UNITS')),
-                metric.get('VAL'))
+                metric.get('VAL')))
 
 def check_metric (opts, host):
     '''Look up the given metric and check it against the provided warning
@@ -73,7 +77,8 @@ def check_metric (opts, host):
 
         for m in opts.extra_metrics:
             xtra.append((m, host[m]))
-    except KeyError, detail:
+    # except KeyError, detail:
+    except KeyError as detail:
         raise NoSuchMetric(detail)
 
     status = (STATUS_CRITICAL, STATUS_WARN)
@@ -85,7 +90,9 @@ def check_metric (opts, host):
 
 def main():
     opts, args = parse_args()
-    
+
+    if (debugLevel > 0): print ('check_ganglia:')
+
     try:
         if opts.host is None:
             raise UsageError('No host argument.')
@@ -107,11 +114,12 @@ def main():
                     msg='%s' % (val),
                     perfdata=([(opts.metric, val)] + xtra))
 
-    except UsageError, detail:
+    # except UsageError, detail:
+    except UsageError as detail:
         nagios.result(opts.host, STATUS_WTF, str(detail))
-    except (ConnectionError, NoSuchHost, NoSuchMetric), detail:
+    # except (ConnectionError, NoSuchHost, NoSuchMetric), detail:
+    except (ConnectionError, NoSuchHost, NoSuchMetric) as detail:
         nagios.result(opts.host, opts.missing, str(detail))
 
 if __name__ == '__main__':
     main()
-
